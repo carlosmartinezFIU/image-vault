@@ -1,0 +1,17 @@
+.card-container-wrapper{
+    margin: 4rem auto 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    column-gap: 50px;
+    row-gap: 32px;
+    max-width: 1200px;
+}
+
+
+@media screen and (max-width: 550px) {
+    .card-container-wrapper div{
+        margin: auto;
+    }
+}
+

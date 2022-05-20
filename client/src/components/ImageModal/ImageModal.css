@@ -1,0 +1,92 @@
+.modal-card-wrapper{
+    width: 330px;
+    height: 350px;
+
+    position: relative;
+    top: 350px;
+    margin: auto;
+    z-index: 1;
+}
+
+.image-modal-popup{
+    width: 100%;
+    height: 100%;
+}
+
+.modal-info-container{
+    width: auto;
+    color: #fff;
+}
+
+.close-modal-btn{
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(176deg) brightness(104%) contrast(103%);
+    cursor: pointer;
+    position: relative;
+    right: -140px;
+    top: 2px;
+}
+
+.modal-overlay{
+    position: fixed; /* Positioning and size */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black; 
+    /*  background-color: rgba(128,128,128,0.5); */
+    z-index: 1;
+}
+
+.modal-btn{
+    position: relative;
+    left: -136px;
+    height: 17px;
+    width: 40px;
+    font-size: 10px;
+
+    cursor: pointer;
+    background: transparent;
+    color: #fff;
+    border: none;
+    font-size: 15px;
+    /*box-shadow: 0px 0px 18px 0px rgb(255, 255, 255);*/
+}
+
+.image-modal-map-location{
+    display: flex;
+}
+
+.image-modal-map-location p{
+    margin: 0px;
+    margin-left: 8px;
+}
+
+.image-modal-description{
+    margin: 21px 0 0 0;
+    text-align: left;
+}
+
+.input-modal-edit-location{
+    background: transparent;
+    color: #fff;
+    width: 200px;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+
+.input-modal-edit-description{
+    margin-top: 12px;
+    background: transparent;
+    color: #fff;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    margin-bottom: 28px;
+  
+}
+
+.form-image-modal-edit{
+    display: flex;
+    flex-direction: column;
+}
