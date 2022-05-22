@@ -26,6 +26,7 @@ useEffect(() =>{
     <div className="App">
       <CardList.Provider value={{list, setList}}>
         <Header />
+        <hr className='header-border'></hr>
         <CardContainer />
       </CardList.Provider>
     </div>

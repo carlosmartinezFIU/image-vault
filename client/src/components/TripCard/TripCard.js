@@ -31,8 +31,7 @@ const TripCard = ({ card }) => {
     also grabs the path of the image to send in body as to
     grab path and delete image from the backend 
   */
-  const deleteCard = async (id, imagePath) =>{
-    
+const deleteCard = async (id, imagePath) =>{
     
     try {
       const deleteCard = await axios.delete(`/photocard/${id}`, { data: { newPath: imagePath}});

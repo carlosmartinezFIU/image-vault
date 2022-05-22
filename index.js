@@ -11,28 +11,58 @@ const PORT = process.env.PORT || 5000;
 /**uses the multer middleware to set uploads when image is uploaded */
 const upload = multer({dest: 'uploads/'});
 
+/** Using function from s3.js to upload from multer upload folder to s3 */
+const { uploadImage, getImageS3, deleteImage } = require('./s3');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 //post a new photocard , Uses the single 
 app.post("/photocard", upload.single("image"), async (req, res) =>{
-    const { path } = req.file;
+    /**
+     *  fieldname: 'image',
+        originalname: 'jamiacaImg.jpg',
+        encoding: '7bit',
+        mimetype: 'image/jpeg',
+        destination: 'uploads/',
+        filename: '0123a1d0293e34ddc50db80d54e1c63d',
+        path: 'uploads/0123a1d0293e34ddc50db80d54e1c63d',
+        size: 86268
+     */
+    const { filename } = req.file;
+    const filePathFolder = req.file.path;
     const { location, description } = req.body;
-    
-    const newRow = await pool.query('INSERT INTO photos (photo_location, photo_description, photo_img) VALUES($1, $2, $3) RETURNING *', 
-    [location, description, path]);
 
+    const awsResult = await uploadImage(req.file)
+    console.log(awsResult);
+    const newFileName = `/images/${filename}`
+    const newRow = await pool.query('INSERT INTO photos (photo_location, photo_description, photo_img) VALUES($1, $2, $3) RETURNING *', 
+    [location, description, newFileName]);
+
+    try {
+        await unlinkFile(filePathFolder);
+    } catch (error) {
+        console.log(error)
+    }
     res.send(newRow.rows[0]);
     
 });
 
 //get a certain image to its respective id from the database
-app.get('/uploads/:filename', async (req, res) =>{
-    const filename = req.params.filename
-    const getStream = fs.createReadStream(path.join(__dirname, 'uploads', filename))
+app.get('/images/:filename', async (req, res) =>{
+   console.log("This is the get from the server", req.params);
+   // const filename = req.params.filename
+   // const getStream = fs.createReadStream(path.join(__dirname, 'uploads', filename))
+   // getStream.pipe(res)
 
-    getStream.pipe(res)
+   //req.params = { filename: '3cd29034678bf2c548ea70ee8b72ab66'}
+
+    const fileNameData = req.params.filename
+    console.log("In the get pointer", fileNameData)
+    const readFile = getImageS3(fileNameData)
+
+    readFile.pipe(res)
 })
 
 
@@ -40,7 +70,7 @@ app.get('/uploads/:filename', async (req, res) =>{
 app.get("/photocard", async (req, res) =>{
     try {
         const allPhotos = await pool.query("SELECT * FROM photos");
-        res.json(allPhotos.rows);
+        res.send(allPhotos.rows);
     } catch (error) {
         console.log(error)
     }
@@ -66,14 +96,18 @@ app.put("/photocard/:id", async (req, res) =>{
 
 //delete a photocard
 app.delete('/photocard/:id', async (req,res) =>{
-    
     const { newPath } = req.body;
+    const newArray = newPath.split("/");
+    const one = newArray[0];
+    const two = newArray[1];
+    const three  = newArray[2];
+
 
     try {
+        const deletedData = deleteImage(three)
         const { id } = req.params;
         const deletePhotoCard = await pool.query('DELETE FROM photos WHERE photo_id = $1 RETURNING *', [id]);
-        await unlinkFile(newPath)
-
+        
 
         res.json(deletePhotoCard);
     } catch (error) {
